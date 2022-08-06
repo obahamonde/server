@@ -32,7 +32,7 @@ async def fetch_url(url: HttpUrl) -> List[HttpUrl]:
             response.append(_)
     return response
 
-async def fetch_many(url: HttpUrl) -> List[HttpUrl]:
+async def yt_fetch_many(url: HttpUrl) -> List[HttpUrl]:
     tasks = [fetch_url(u) for u in await fetch_url(url)]
     urls = [u for t in await asyncio.gather(*tasks) for u in t]
     response = []
@@ -54,23 +54,12 @@ def download_video(url: HttpUrl) -> str:
 
 app = APIRouter()
 
-@app.post('/yt')
+@app.get('/yt')
 async def yt(url: HttpUrl):
     d = datetime.now()
     response = await fetch_url(url)
     print(f'{datetime.now() - d}')
     return{
-        "url": url,
-        "data": response,
-        "time": datetime.now() - d,
-        "urls/s": f"{len(response)/(datetime.now() - d).total_seconds()} urls/s"
-    }
-@app.get('/yt')
-async def yt_many(url: HttpUrl):
-    d = datetime.now()
-    response = await fetch_many(url)
-    print(f'{datetime.now() - d}')
-    return {
         "url": url,
         "data": response,
         "time": datetime.now() - d,

@@ -26,7 +26,7 @@ def user(request:Request):
 def use_auth(app:FastAPI)->FastAPI:
     @app.middleware('http')
     async def auth_client(request:Request, call_next:Callable):
-        if request.url.path.find('/api/') == 0:
+        if request.url.path.startswith('/api'):
             try:
                 token = request.headers.get('Authorization').split(' ')[1]
                 print(token)
